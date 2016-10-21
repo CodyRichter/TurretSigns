@@ -1,0 +1,27 @@
+main: com.google.Vortek.Main
+name: TurretSigns
+version: 1.0
+author: me
+depend: [Movecraft]
+description: Enables Secondary Gun Turrets
+commands:
+  turretsigns:
+    description: Displays Plugin Information
+    usage: /<command>
+    permission: turretsigns.info
+    permission-message: Error! Insufficient Permissions! (turretsigns.info)
+  turretenable:
+    description: Enables Automatic Turrets
+    usage: /<command>
+    permission: turretsigns.enable
+    permission-message: Error! Insufficient Permissions! (turretsigns.enable)
+  turretdisable:
+    description: Disables Automatic Turrets
+    usage: /<command>
+    permission: turretsigns.disable
+    permission-message: Error! Insufficient Permissions! (turretsigns.disable)    
+  target:
+    description: Selects Firing Target
+    usage: /<command>
+    permission: turretsigns.target
+    permission-message: Error! Insufficient Permissions! (turretsigns.target)    
