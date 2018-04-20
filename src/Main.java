@@ -2,6 +2,7 @@ package src;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Effect;
 import org.bukkit.Location;
@@ -38,14 +39,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
-/*
-import net.countercraft.movecraft.events.CraftRotateEvent;
-import net.countercraft.movecraft.events.CraftSinkingEvent;
-import net.countercraft.movecraft.events.CraftTranslateEvent;
-import net.countercraft.movecraft.utils.MathUtils;
-import net.countercraft.movecraft.utils.MovecraftLocation;
-import net.countercraft.movecraft.craft.CraftManager;
-*/
+
 import net.md_5.bungee.api.ChatColor;
 
 public class Main extends JavaPlugin implements Listener {
@@ -68,64 +62,27 @@ public class Main extends JavaPlugin implements Listener {
     ArrayList<Player> reload = new ArrayList<Player>();
     ArrayList<Player> regionList = new ArrayList<Player>();
     //CraftManager cm;
-    
+
     //Runs on start
     public void onEnable() {
         PluginManager pm = this.getServer().getPluginManager(); // Define Plugin
         // Manager
         pm.registerEvents(this, this); // Registers
         // Blocklistener.java
-        //cm = CraftManager.getInstance();
     }
 
     public void onDisable() {
 
-    	
-    	for (ArrayList <Location> locList : startTarget.values())
-    	{
-    		for(Location loc : locList)
-    		{
-    			Sign sign = (Sign) loc.clone().add(0, -1, 0).getBlock().getState();
+
+        for (ArrayList<Location> locList : startTarget.values()) {
+            for (Location loc : locList) {
+                Sign sign = (Sign) loc.clone().add(0, -1, 0).getBlock().getState();
                 sign.setLine(1, ChatColor.RED + "-Disabled-");
-    		}
-    	}
+            }
+        }
     }
 
-    //                    //
-    //                    //
-    // Enables WG/WE      //
-    //                    //
-    //                    //
-   
-/*    private WorldGuardPlugin getWorldGuard() {
-        Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("WorldGuard");
-     
-        // WorldGuard may not be loaded
-        if (plugin == null || !(plugin instanceof WorldGuardPlugin)) {
-            return null; // Maybe you want throw an exception instead
-        }
-     
-        return (WorldGuardPlugin) plugin;
-    }
-   
-    private WorldEditPlugin getWorldEdit() {
-            Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
-             
-        // WorldGuard may not be loaded
-        if (plugin == null || !(plugin instanceof WorldEditPlugin)) {
-            return null; // Maybe you want throw an exception instead
-        }
-     
-        
-        
-        
-        return (WorldEditPlugin) plugin;
-    }*/
-    
-    
-  
-    public final Block getTargetedBlock(Player player, int range) 
-    {
+    public final Block getTargetedBlock(Player player, int range) {
         BlockIterator iter = new BlockIterator(player, range);
         Block lastBlock = iter.next();
         while (iter.hasNext()) {
@@ -141,141 +98,57 @@ public class Main extends JavaPlugin implements Listener {
     //
     // Tests If Target is Within Range
     //
-    public final static int getDistance(Location loc1, Location loc2)  
-    {
-        int distance = (int) Math.sqrt(Math.pow(((int)loc2.getX()-(int)loc1.getX()), 2) + Math.pow(((int)loc2.getY()-(int)loc1.getY()), 2) + Math.pow(((int)loc2.getY()-(int)loc1.getY()), 2));
-        return (int)distance;
+    public final static int getDistance(Location loc1, Location loc2) {
+        int distance = (int) Math.sqrt(Math.pow(((int) loc2.getX() - (int) loc1.getX()), 2) + Math.pow(((int) loc2.getY() - (int) loc1.getY()), 2) + Math.pow(((int) loc2.getY() - (int) loc1.getY()), 2));
+        return (int) distance;
     }
 
-    
-    
-/*    public void makeProtectedArea(Location loc, Player p)
-    {
-    	ProtectedCuboidRegion region = new ProtectedCuboidRegion(
-                "shield_" + p.getName(),
-                new com.sk89q.worldedit.BlockVector(loc.getX()-30, loc.getY()-20, loc.getZ()-30),
-                new com.sk89q.worldedit.BlockVector(loc.getX()+30, loc.getY()+20, loc.getZ()+30));
-    	getWorldGuard().getRegionManager(p.getWorld()).addRegion(region);
-    	getWorldGuard().getRegionManager (p.getWorld()).getRegion("shield_" + p.getName()).setFlag ( DefaultFlag.OTHER_EXPLOSION, State.DENY);
-    	getWorldGuard().getRegionManager (p.getWorld()).getRegion("shield_" + p.getName()).setFlag ( DefaultFlag.TNT, State.DENY);
-    	getWorldGuard().getRegionManager (p.getWorld()).getRegion("shield_" + p.getName()).setFlag ( DefaultFlag.PASSTHROUGH, State.ALLOW);
-    	DefaultDomain dd = new DefaultDomain();
-    	dd.addPlayer(p.getName());
-    	region.setOwners(dd);
-        p.sendMessage(ChatColor.RED + "[Turrets] " + ChatColor.GRAY + "Shield Generator Active!");
-    	
-    }
-    
-    
-    public void removeProtectedArea(Player p)
-    {
-    	getWorldGuard().getRegionManager(p.getWorld()).removeRegion("shield_" + p.getName());
-        p.sendMessage(ChatColor.RED + "[Turrets] " + ChatColor.GRAY + "Shield Generator Deactivated!");
-    }*/
-    
- 
-    
-    
-    //                        //
-    //                        //
-    //    Testing Shields     //
-    //                        //
-    //                        //   
- /*   public boolean testForShield(Location loc, Player p)
-    {
-    	boolean result = true;
-    	Location hitLoc = loc;
-    	for (Location shieldLoc : shieldGen)
-    	{
-    		double distance = hitLoc.distance(shieldLoc);
-    		
-    		Chest ammoChest = (Chest)shieldLoc.clone().add(0, -2, 0).getBlock().getState();
-    		if (distance <= 50 && ammoChest.getBlockInventory().first(Material.PRISMARINE_CRYSTALS) != -1)
-    		{
-    			//Bukkit.broadcastMessage("Shield Gen Within 50 Blocks! Location: " + shieldLoc.getX() + " " + shieldLoc.getY() + " " + shieldLoc.getZ());
-    			ItemStack stack = ammoChest.getBlockInventory().getItem(ammoChest.getBlockInventory().first(Material.PRISMARINE_CRYSTALS) ).clone();
-                stack.setAmount(8);
-                ammoChest.getBlockInventory().removeItem(stack);
-                hitLoc.getWorld().playEffect(hitLoc, Effect.EXTINGUISH, 3, 50);
-    			result = false;
-    			return false;
-    		}
-    		else
-    		{
-    			Location signLoc = shieldLoc.add(0, -1, 0);
-    			shieldGen.remove(shieldLoc);
-    			Sign sign = (Sign) signLoc.getBlock().getState();
-    			String playerLine = sign.getLine(3);
-    			Player shieldOwner = Bukkit.getServer().getPlayer(playerLine);
-    	    	getWorldGuard().getRegionManager(p.getWorld()).removeRegion("shield_" + shieldOwner.getName());
-    	        shieldOwner.sendMessage(ChatColor.RED + "[Turrets] " + ChatColor.GRAY + "Warning: Shield Has Run out of Crystals and Must Be Recharged!");
-    			
-    		}
-    	}
-    	
-    	return result;
-    }*/
-    
     //                        //
     //                        //
     //    Firing Projectile   //
     //                        //
     //                        //
-    public void fireProjectile(Player p, String id)
-    {
-        if (reload.contains(p))
-        {
-        }
-        else
-        {
-            for (Location startPosition : startTarget.get(p.getPlayer()))
-            {
-            	if (startPosition.clone().add(0, -1, 0).getBlock().getType() == Material.SIGN_POST)
-            	{
-            		Sign sign = (Sign) startPosition.clone().add(0, -1, 0).getBlock().getState();
-            		if (startPosition.clone().add(0, -2, 0).getBlock().getType() == Material.CHEST)
-            		{
-                    	Chest ammoChest = (Chest)startPosition.clone().add(0, -2, 0).getBlock().getState();
-            	
-            		if(ammoChest.getBlockInventory().first(Material.TNT) != -1 && ammoChest.getBlockInventory().getItem(ammoChest.getBlockInventory().first(Material.TNT)).getAmount() >= 4 && sign.getLine(2).equalsIgnoreCase(id) || ammoChest.getBlockInventory().first(Material.TNT) != -1 && ammoChest.getBlockInventory().getItem(ammoChest.getBlockInventory().first(Material.TNT)).getAmount() >= 4 && sign.getLine(2).equalsIgnoreCase(""))
-            		{
-                    	ItemStack stack = ammoChest.getBlockInventory().getItem(ammoChest.getBlockInventory().first(Material.TNT) ).clone();
-                        stack.setAmount(4);
-                        ammoChest.getBlockInventory().removeItem(stack);
-                        Location targetPosition = finalTarget.get(p.getPlayer());
-                        Vector vector = targetPosition.toVector().subtract(startPosition.toVector());
+    public void fireProjectile(Player p, String id) {
+        if (reload.contains(p)) {
+        } else {
+            for (Location startPosition : startTarget.get(p.getPlayer())) {
+                if (startPosition.clone().add(0, -1, 0).getBlock().getType() == Material.SIGN_POST) {
+                    Sign sign = (Sign) startPosition.clone().add(0, -1, 0).getBlock().getState();
+                    if (startPosition.clone().add(0, -2, 0).getBlock().getType() == Material.CHEST) {
+                        Chest ammoChest = (Chest) startPosition.clone().add(0, -2, 0).getBlock().getState();
 
-                        Snowball snowball = startPosition.getWorld().spawn(startPosition, Snowball.class);
-                        snowball.setVelocity(vector.normalize().multiply(3));
-                        snowball.setCustomName("Secondary");
-                        snowball.setCustomNameVisible(false);
-                        snowball.setShooter(p);
-                        snowball.isOnGround();
-                        p.getWorld().playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 3.0F, 0.5F);
-                        startPosition.getWorld().playEffect(startPosition, Effect.EXPLOSION, 5);
-                        reload.add(p);
-                        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable()
-                            {
-                                public void run()
-                                {
+                        if (ammoChest.getBlockInventory().first(Material.TNT) != -1 && ammoChest.getBlockInventory().getItem(ammoChest.getBlockInventory().first(Material.TNT)).getAmount() >= 4 && sign.getLine(2).equalsIgnoreCase(id) || ammoChest.getBlockInventory().first(Material.TNT) != -1 && ammoChest.getBlockInventory().getItem(ammoChest.getBlockInventory().first(Material.TNT)).getAmount() >= 4 && sign.getLine(2).equalsIgnoreCase("")) {
+                            ItemStack stack = ammoChest.getBlockInventory().getItem(ammoChest.getBlockInventory().first(Material.TNT)).clone();
+                            stack.setAmount(4);
+                            ammoChest.getBlockInventory().removeItem(stack);
+                            Location targetPosition = finalTarget.get(p.getPlayer());
+                            Vector vector = targetPosition.toVector().subtract(startPosition.toVector());
+
+                            Snowball snowball = startPosition.getWorld().spawn(startPosition, Snowball.class);
+                            snowball.setVelocity(vector.normalize().multiply(3));
+                            snowball.setCustomName("Secondary");
+                            snowball.setCustomNameVisible(false);
+                            snowball.setShooter(p);
+                            snowball.isOnGround();
+                            p.getWorld().playSound(p.getLocation(), Sound.ENTITY_GENERIC_EXPLODE, 3.0F, 0.5F);
+                            startPosition.getWorld().playEffect(startPosition, Effect.EXPLOSION, 5);
+                            reload.add(p);
+                            Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+                                public void run() {
                                     reload.remove(p);
                                 }
                             }, 100);
+                        } else {
+                            p.getWorld().playSound(p.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 3.0F, 0.5F);
+                        }
                     }
-            		else
-            		{
-                        p.getWorld().playSound(p.getLocation(), Sound.BLOCK_DISPENSER_FAIL, 3.0F, 0.5F);
-            		}
-            	}
-            }
-            	else
-            	{
-            		startTarget.remove(p.getPlayer(), startPosition);
-            	}
-            }
+                } else {
+                    startTarget.remove(p.getPlayer(), startPosition);
+                }
             }
         }
-    
+    }
+
     //                       //
     //                       //
     //    Ingame Commands    //
@@ -285,13 +158,12 @@ public class Main extends JavaPlugin implements Listener {
         Player player = (Player) sender;
         if (command.getName().equalsIgnoreCase("turretsigns") && sender instanceof Player) {
             player.sendMessage(ChatColor.RED + "[Turrets]" + ChatColor.GRAY + " TurretSigns by " + AUTHOR
-                + " is Enabled. Version: " + VERSION);
+                    + " is Enabled. Version: " + VERSION);
             return true;
         }
         if (command.getName().equalsIgnoreCase("turretdemount") && sender instanceof Player && sender.hasPermission("turretsigns.turretdemount")) {
             Player target = Bukkit.getServer().getPlayer(args[0]);
-            if (target==null)
-            {
+            if (target == null) {
                 player.sendMessage(ChatColor.RED + "[Turrets] " + "Error: Please Specify a Player to Force-Release from Their Turrets.");
                 return true;
             }
@@ -300,13 +172,14 @@ public class Main extends JavaPlugin implements Listener {
             return true;
         }
         if (command.getName().equalsIgnoreCase("beam") && sender instanceof Player && sender.hasPermission("turretsigns.beam")) {
-           Bukkit.broadcastMessage(ChatColor.RED + "[Beaming] " + ChatColor.GRAY + player.getName() + " Beamed to Their Ship!");
-           player.setHealth(0);
+            Bukkit.broadcastMessage(ChatColor.RED + "[Beaming] " + ChatColor.GRAY + player.getName() + " Beamed to Their Ship!");
+            player.setHealth(0);
             return true;
         }
         return false;
 
     }
+
     //                        //
     //                        //
     //    Creating Explosion  //
@@ -314,230 +187,191 @@ public class Main extends JavaPlugin implements Listener {
     //                        //
     @EventHandler(priority = EventPriority.HIGHEST)
     public void onSecondaryHitTarget(ProjectileHitEvent e) { //Creates Explosion Where Snowball Lands
-        if(e.getEntity() instanceof Snowball)
-        {
-            Snowball snowball = (Snowball)e.getEntity();
+        if (e.getEntity() instanceof Snowball) {
+            Snowball snowball = (Snowball) e.getEntity();
             Location loc = snowball.getLocation();
             Player p = (Player) snowball.getShooter();
-            if(snowball.getName().equalsIgnoreCase("secondary")/* && testForShield(loc, p) */&& snowball.getTicksLived() >= 10)
-            {
+            if (snowball.getName().equalsIgnoreCase("secondary")/* && testForShield(loc, p) */ && snowball.getTicksLived() >= 10) {
                 snowball.getWorld().createExplosion(loc, 4.0F);
+            } else if (!snowball.getName().equalsIgnoreCase("secondary")/* && testForShield(loc, p)*/) {
+                snowball.getLocation().getBlock().setType(Material.WATER);
+                snowball.getLocation().getBlock().setType(Material.AIR);
             }
-            else if (!snowball.getName().equalsIgnoreCase("secondary")/* && testForShield(loc, p)*/)
-            {
-            	snowball.getLocation().getBlock().setType(Material.WATER);
-            	snowball.getLocation().getBlock().setType(Material.AIR);
-            }
-        
+
         }
-        
+
     }
-    
-    
-    
+
+
     //                       //
     //                       //
     //    Sign Creation      // 
     //                       //
     //                       //
-    
-    @EventHandler 
-    public void onFlakClick(PlayerInteractEvent e)
-    {
-    	if (e.getAction() == Action.RIGHT_CLICK_BLOCK)
-    	{
-    		if (e.getClickedBlock().getType() == Material.WALL_SIGN || e.getClickedBlock().getType() == Material.SIGN_POST)
-    		{
-    			Sign sign = (Sign)e.getClickedBlock().getState();
-    			Player p = e.getPlayer();
-    			
-    			if (sign.getLine(1).equalsIgnoreCase(ChatColor.RED + "20mm Flak"))
-                {
-                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "eco take " + p.getName() + " " 
-                    		+ price20mmSingle);
+
+    @EventHandler
+    public void onFlakClick(PlayerInteractEvent e) {
+        if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
+            if (e.getClickedBlock().getType() == Material.WALL_SIGN || e.getClickedBlock().getType() == Material.SIGN_POST) {
+                Sign sign = (Sign) e.getClickedBlock().getState();
+                Player p = e.getPlayer();
+
+                if (sign.getLine(1).equalsIgnoreCase(ChatColor.RED + "20mm Flak")) {
+                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "eco take " + p.getName() + " "
+                            + price20mmSingle);
                     sign.setLine(0, "[20mm Flak]");
-                	sign.setLine(1, "[-------------]");
-                	sign.setLine(2, ChatColor.DARK_RED + "Mounted");
-                	sign.setLine(3, ChatColor.DARK_RED + "Turret");
-                	setDelay(e.getPlayer());
-                	sign.update();
+                    sign.setLine(1, "[-------------]");
+                    sign.setLine(2, ChatColor.DARK_RED + "Mounted");
+                    sign.setLine(3, ChatColor.DARK_RED + "Turret");
+                    setDelay(e.getPlayer());
+                    sign.update();
+                } else if (sign.getLine(1).equalsIgnoreCase(ChatColor.RED + "20mm Quad Flak")) {
+                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "eco take " + p.getName() + " "
+                            + price20mmQuad);
+                    sign.setLine(0, "[20mm Quad Flak]");
+                    sign.setLine(1, "[-------------]");
+                    sign.setLine(2, ChatColor.DARK_RED + "Mounted");
+                    sign.setLine(3, ChatColor.DARK_RED + "Turret");
+                    setDelay(e.getPlayer());
+                    sign.update();
+                } else if (sign.getLine(1).equalsIgnoreCase(ChatColor.RED + "40mm Flak")) {
+                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "eco take " + p.getName() + " "
+                            + price40mmSingle);
+                    sign.setLine(0, "[40mm Flak]");
+                    sign.setLine(1, "[-------------]");
+                    sign.setLine(2, ChatColor.DARK_RED + "Mounted");
+                    sign.setLine(3, ChatColor.DARK_RED + "Turret");
+                    setDelay(e.getPlayer());
+                    sign.update();
+                } else if (sign.getLine(1).equalsIgnoreCase(ChatColor.RED + "40mm Dual Flak")) {
+                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "eco take " + p.getName() + " "
+                            + price40mmDouble);
+                    sign.setLine(0, "[40mm Dual Flak]");
+                    sign.setLine(1, "[-------------]");
+                    sign.setLine(2, ChatColor.DARK_RED + "Mounted");
+                    sign.setLine(3, ChatColor.DARK_RED + "Turret");
+                    setDelay(e.getPlayer());
+                    sign.update();
+                } else if (sign.getLine(1).equalsIgnoreCase(ChatColor.RED + "75mm AP Cannon")) {
+                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "eco take " + p.getName() + " "
+                            + price75mmAP);
+                    sign.setLine(0, "[75mm DP Gun]");
+                    sign.setLine(1, "[-------------]");
+                    sign.setLine(2, ChatColor.DARK_RED + "Mounted");
+                    sign.setLine(3, ChatColor.DARK_RED + "Turret");
+                    setDelay(e.getPlayer());
+                    sign.update();
+                } else if (sign.getLine(1).equalsIgnoreCase(ChatColor.RED + "75mm HE Cannon")) {
+                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "eco take " + p.getName() + " "
+                            + price75mmHE);
+                    sign.setLine(0, "[75mm HE Gun]");
+                    sign.setLine(1, "[-------------]");
+                    sign.setLine(2, ChatColor.DARK_RED + "Mounted");
+                    sign.setLine(3, ChatColor.DARK_RED + "Turret");
+                    setDelay(e.getPlayer());
+                    sign.update();
                 }
-                else if (sign.getLine(1).equalsIgnoreCase(ChatColor.RED + "20mm Quad Flak"))
-                {
-                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "eco take " + p.getName() + " " 
-                    		+ price20mmQuad);
-                	sign.setLine(0, "[20mm Quad Flak]");
-                	sign.setLine(1, "[-------------]");
-                	sign.setLine(2, ChatColor.DARK_RED + "Mounted");
-                	sign.setLine(3, ChatColor.DARK_RED + "Turret");
-                	setDelay(e.getPlayer());
-                	sign.update();
-                }
-                else if (sign.getLine(1).equalsIgnoreCase(ChatColor.RED + "40mm Flak"))
-                {
-                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "eco take " + p.getName() + " " 
-                    		+ price40mmSingle);
-                	sign.setLine(0, "[40mm Flak]");
-                	sign.setLine(1, "[-------------]");
-                	sign.setLine(2, ChatColor.DARK_RED + "Mounted");
-                	sign.setLine(3, ChatColor.DARK_RED + "Turret");
-                	setDelay(e.getPlayer());
-                	sign.update();
-                }
-                else if (sign.getLine(1).equalsIgnoreCase(ChatColor.RED + "40mm Dual Flak"))
-                {
-                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "eco take " + p.getName() + " " 
-                    		+ price40mmDouble);
-                	sign.setLine(0, "[40mm Dual Flak]");
-                	sign.setLine(1, "[-------------]");
-                	sign.setLine(2, ChatColor.DARK_RED + "Mounted");
-                	sign.setLine(3, ChatColor.DARK_RED + "Turret");
-                	setDelay(e.getPlayer());
-                	sign.update();
-                }
-                else if (sign.getLine(1).equalsIgnoreCase(ChatColor.RED + "75mm AP Cannon"))
-                {
-                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "eco take " + p.getName() + " " 
-                    		+ price75mmAP);
-                	sign.setLine(0, "[75mm DP Gun]");
-                	sign.setLine(1, "[-------------]");
-                	sign.setLine(2, ChatColor.DARK_RED + "Mounted");
-                	sign.setLine(3, ChatColor.DARK_RED + "Turret");
-                	setDelay(e.getPlayer());
-                	sign.update();
-                }
-                else if (sign.getLine(1).equalsIgnoreCase(ChatColor.RED + "75mm HE Cannon"))
-                {
-                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "eco take " + p.getName() + " " 
-                    		+ price75mmHE);
-                	sign.setLine(0, "[75mm HE Gun]");
-                	sign.setLine(1, "[-------------]");
-                	sign.setLine(2, ChatColor.DARK_RED + "Mounted");
-                	sign.setLine(3, ChatColor.DARK_RED + "Turret");
-                	setDelay(e.getPlayer());
-                	sign.update();
-                }
-    			//
-    			// Mounting Turrets
-    			//
-    			if (sign.getLine(0).contains("[20mm Flak]") && !isMounted.containsKey(p) && p.getLocation().getBlock().getType() != Material.STATIONARY_WATER && p.getLocation().getBlock().getType() != Material.WATER)
-    			{
-    				isMounted.put(p, true);
-    				p.addPotionEffect((new PotionEffect(PotionEffectType.JUMP, 1000000, 200, true)));
-    				p.addPotionEffect((new PotionEffect(PotionEffectType.SLOW, 1000000, 10, true)));
-    				Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:tp " + p.getName() + " " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
+                //
+                // Mounting Turrets
+                //
+                if (sign.getLine(0).contains("[20mm Flak]") && !isMounted.containsKey(p) && p.getLocation().getBlock().getType() != Material.STATIONARY_WATER && p.getLocation().getBlock().getType() != Material.WATER) {
+                    isMounted.put(p, true);
+                    p.addPotionEffect((new PotionEffect(PotionEffectType.JUMP, 1000000, 200, true)));
+                    p.addPotionEffect((new PotionEffect(PotionEffectType.SLOW, 1000000, 10, true)));
+                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:tp " + p.getName() + " " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
                     Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "shot give " + p.getName() + " 20mmFlak");
-    			}
-    			else if (sign.getLine(0).contains("[20mm Quad Flak]") && !isMounted.containsKey(p) && p.getLocation().getBlock().getType() != Material.STATIONARY_WATER && p.getLocation().getBlock().getType() != Material.WATER)
-    			{
-    				isMounted.put(p, true);
-    				p.addPotionEffect((new PotionEffect(PotionEffectType.JUMP, 1000000, 200, true)));
-    				p.addPotionEffect((new PotionEffect(PotionEffectType.SLOW, 1000000, 10, true)));
-    				Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:tp " + p.getName() + " " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
+                } else if (sign.getLine(0).contains("[20mm Quad Flak]") && !isMounted.containsKey(p) && p.getLocation().getBlock().getType() != Material.STATIONARY_WATER && p.getLocation().getBlock().getType() != Material.WATER) {
+                    isMounted.put(p, true);
+                    p.addPotionEffect((new PotionEffect(PotionEffectType.JUMP, 1000000, 200, true)));
+                    p.addPotionEffect((new PotionEffect(PotionEffectType.SLOW, 1000000, 10, true)));
+                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:tp " + p.getName() + " " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
                     Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "shot give " + p.getName() + " 20mmQuadFlak");
-    			}
-    			else if (sign.getLine(0).contains("[40mm Flak]") && !isMounted.containsKey(p) && p.getLocation().getBlock().getType() != Material.STATIONARY_WATER && p.getLocation().getBlock().getType() != Material.WATER)
-    			{
-    				isMounted.put(p, true);
-    				p.addPotionEffect((new PotionEffect(PotionEffectType.JUMP, 1000000, 200, true)));
-    				p.addPotionEffect((new PotionEffect(PotionEffectType.SLOW, 1000000, 10, true)));
-    				Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:tp " + p.getName() + " " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
+                } else if (sign.getLine(0).contains("[40mm Flak]") && !isMounted.containsKey(p) && p.getLocation().getBlock().getType() != Material.STATIONARY_WATER && p.getLocation().getBlock().getType() != Material.WATER) {
+                    isMounted.put(p, true);
+                    p.addPotionEffect((new PotionEffect(PotionEffectType.JUMP, 1000000, 200, true)));
+                    p.addPotionEffect((new PotionEffect(PotionEffectType.SLOW, 1000000, 10, true)));
+                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:tp " + p.getName() + " " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
                     Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "shot give " + p.getName() + " 40mmFlak");
-    			}
-    			else if (sign.getLine(0).contains("[40mm Dual Flak]") && !isMounted.containsKey(p) && p.getLocation().getBlock().getType() != Material.STATIONARY_WATER && p.getLocation().getBlock().getType() != Material.WATER)
-    			{
-    				isMounted.put(p, true);
-    				p.addPotionEffect((new PotionEffect(PotionEffectType.JUMP, 1000000, 200, true)));
-    				p.addPotionEffect((new PotionEffect(PotionEffectType.SLOW, 1000000, 10, true)));
-    				Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:tp " + p.getName() + " " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
+                } else if (sign.getLine(0).contains("[40mm Dual Flak]") && !isMounted.containsKey(p) && p.getLocation().getBlock().getType() != Material.STATIONARY_WATER && p.getLocation().getBlock().getType() != Material.WATER) {
+                    isMounted.put(p, true);
+                    p.addPotionEffect((new PotionEffect(PotionEffectType.JUMP, 1000000, 200, true)));
+                    p.addPotionEffect((new PotionEffect(PotionEffectType.SLOW, 1000000, 10, true)));
+                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:tp " + p.getName() + " " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
                     Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "shot give " + p.getName() + " 40mmDualFlak");
-    			}
-    			else if (sign.getLine(0).contains("[75mm DP Gun]") && !isMounted.containsKey(p) && p.getLocation().getBlock().getType() != Material.STATIONARY_WATER && p.getLocation().getBlock().getType() != Material.WATER)
-    			{
-    				isMounted.put(p, true);
-    				p.addPotionEffect((new PotionEffect(PotionEffectType.JUMP, 1000000, 200, true)));
-    				p.addPotionEffect((new PotionEffect(PotionEffectType.SLOW, 1000000, 10, true)));
-    				Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:tp " + p.getName() + " " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
+                } else if (sign.getLine(0).contains("[75mm DP Gun]") && !isMounted.containsKey(p) && p.getLocation().getBlock().getType() != Material.STATIONARY_WATER && p.getLocation().getBlock().getType() != Material.WATER) {
+                    isMounted.put(p, true);
+                    p.addPotionEffect((new PotionEffect(PotionEffectType.JUMP, 1000000, 200, true)));
+                    p.addPotionEffect((new PotionEffect(PotionEffectType.SLOW, 1000000, 10, true)));
+                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:tp " + p.getName() + " " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
                     Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "shot give " + p.getName() + " 75mmArtillery");
-    			}
-    			else if (sign.getLine(0).contains("[75mm HE Gun]") && !isMounted.containsKey(p) && p.getLocation().getBlock().getType() != Material.STATIONARY_WATER && p.getLocation().getBlock().getType() != Material.WATER)
-    			{
-    				isMounted.put(p, true);
-    				p.addPotionEffect((new PotionEffect(PotionEffectType.JUMP, 1000000, 200, true)));
-    				p.addPotionEffect((new PotionEffect(PotionEffectType.SLOW, 1000000, 10, true)));
-    				Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:tp " + p.getName() + " " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
+                } else if (sign.getLine(0).contains("[75mm HE Gun]") && !isMounted.containsKey(p) && p.getLocation().getBlock().getType() != Material.STATIONARY_WATER && p.getLocation().getBlock().getType() != Material.WATER) {
+                    isMounted.put(p, true);
+                    p.addPotionEffect((new PotionEffect(PotionEffectType.JUMP, 1000000, 200, true)));
+                    p.addPotionEffect((new PotionEffect(PotionEffectType.SLOW, 1000000, 10, true)));
+                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:tp " + p.getName() + " " + sign.getX() + " " + sign.getY() + " " + sign.getZ());
                     Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "shot give " + p.getName() + " 75mmArtilleryHE");
-    			}
-    			
-    			
-    		}
-    	}
+                }
+
+
+            }
+        }
     }
+
     //Prevents Drinking Milk to Heal Potion From Turret
     @EventHandler
-    public void onMilkDrink(PlayerInteractEvent e)
-    {
-    	if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.MILK_BUCKET)
-    	{
-    		if (isMounted.containsKey(e.getPlayer()))
-    		{
-    			e.setCancelled(true);
-    		}
-    	
-    	}
+    public void onMilkDrink(PlayerInteractEvent e) {
+        if (e.getPlayer().getInventory().getItemInMainHand().getType() == Material.MILK_BUCKET) {
+            if (isMounted.containsKey(e.getPlayer())) {
+                e.setCancelled(true);
+            }
+
+        }
     }
-    
+
     //Prevents Dropping of Turret
     @EventHandler
-    public void onItemDrop(PlayerDropItemEvent e)
-    {
-    	if (isMounted.containsKey(e.getPlayer()) && e.getItemDrop().getItemStack().getType() == Material.IRON_HOE)
-    	{
-    		e.setCancelled(true);
-    	}
+    public void onItemDrop(PlayerDropItemEvent e) {
+        if (isMounted.containsKey(e.getPlayer()) && e.getItemDrop().getItemStack().getType() == Material.IRON_HOE) {
+            e.setCancelled(true);
+        }
     }
-    
+
     //Prevents Players Picking up Turret After Death
     @EventHandler
-    public void onTurretPickup(PlayerPickupItemEvent e)
-    {
-    	Player p = e.getPlayer();
-    	Material droppeditem = (Material)e.getItem().getItemStack().getType();
-    	if (!isMounted.containsKey(e.getPlayer()) && droppeditem == (Material.IRON_HOE))
-    	{
-    		e.setCancelled(true);
-    	}
+    public void onTurretPickup(PlayerPickupItemEvent e) {
+        Player p = e.getPlayer();
+        Material droppeditem = (Material) e.getItem().getItemStack().getType();
+        if (!isMounted.containsKey(e.getPlayer()) && droppeditem == (Material.IRON_HOE)) {
+            e.setCancelled(true);
+        }
     }
+
     //Prevent Moving Turret in Inventory
     @EventHandler
-    public void onTurretMove(InventoryClickEvent e)
-    {
-    	Player p = (Player) e.getWhoClicked();
-    	if (e.getCurrentItem().getType() != null && e.getCurrentItem().getType() != Material.AIR && e.getCurrentItem().getType() == Material.IRON_HOE)
-    	{
-    		e.setCancelled(true);
-    	}
+    public void onTurretMove(InventoryClickEvent e) {
+        Player p = (Player) e.getWhoClicked();
+        if (e.getCurrentItem().getType() != null && e.getCurrentItem().getType() != Material.AIR && e.getCurrentItem().getType() == Material.IRON_HOE) {
+            e.setCancelled(true);
+        }
     }
-    
-    
-    
+
+
     //Demount Turret
     @EventHandler
     public void onPlayerToggleSneakEvent(PlayerToggleSneakEvent event) {
         Player p = event.getPlayer();
-        if(p.isSneaking()) {
-        	if (isMounted.containsKey(p))
-        	{
-        		isMounted.remove(p);
-				p.removePotionEffect(PotionEffectType.JUMP);
-				p.removePotionEffect(PotionEffectType.SLOW);
-                Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:clear " + p.getName() + " " 
-                		+ "minecraft:iron_hoe");
-        	}
+        if (p.isSneaking()) {
+            if (isMounted.containsKey(p)) {
+                isMounted.remove(p);
+                p.removePotionEffect(PotionEffectType.JUMP);
+                p.removePotionEffect(PotionEffectType.SLOW);
+                Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), "minecraft:clear " + p.getName() + " "
+                        + "minecraft:iron_hoe");
+            }
         }
-        }
-    
-    
+    }
+
+
     @EventHandler
     public void onSignClick(PlayerInteractEvent e) {
         if (e.getAction() == Action.RIGHT_CLICK_BLOCK) {
@@ -546,15 +380,14 @@ public class Main extends JavaPlugin implements Listener {
                 Player p = (Player) e.getPlayer();
                 if (sign.getLine(0).equalsIgnoreCase(ChatColor.GOLD + "[Turret]")) {
                     Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                        "eco take " + p.getName() + " " + priceCreateTurret);
+                            "eco take " + p.getName() + " " + priceCreateTurret);
                     Location loc = (Location) sign.getLocation().add(0, -1, 0);
                     loc.getBlock().setType(Material.CHEST);
                     sign.setLine(0, ChatColor.GRAY + "[Turret]");
                     sign.setLine(1, ChatColor.RED + "-Disabled-");
                     sign.setLine(3, ChatColor.stripColor(p.getName()));
                     sign.update();
-                } 
-                else if (sign.getLine(1).equalsIgnoreCase(ChatColor.RED + "-Disabled-") && sign.getLine(3).equalsIgnoreCase(ChatColor.stripColor(p.getName()))) { //Enable Turret Sign
+                } else if (sign.getLine(1).equalsIgnoreCase(ChatColor.RED + "-Disabled-") && sign.getLine(3).equalsIgnoreCase(ChatColor.stripColor(p.getName()))) { //Enable Turret Sign
                     if (!startTarget.containsKey(p.getPlayer()))
                         startTarget.put(p.getPlayer(), new ArrayList<Location>());
 
@@ -563,45 +396,16 @@ public class Main extends JavaPlugin implements Listener {
                     sign.setLine(0, ChatColor.GRAY + "[Turret]");
                     sign.setLine(1, ChatColor.GREEN + "-Enabled-");
                     sign.update();
-                }
-                else if (sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "-Enabled-") && sign.getLine(3).equalsIgnoreCase(ChatColor.stripColor(p.getName()))) { //Disable Turret Sign
+                } else if (sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "-Enabled-") && sign.getLine(3).equalsIgnoreCase(ChatColor.stripColor(p.getName()))) { //Disable Turret Sign
                     sign.setLine(0, ChatColor.GRAY + "[Turret]");
                     sign.setLine(1, ChatColor.RED + "-Disabled-");
                     startTarget.get(p.getPlayer()).remove(sign.getLocation().add(0, 1, 0));
                     sign.update();
                 }
-                //
-                // Shield Creation
-                //
-               /* if (sign.getLine(1).equalsIgnoreCase(ChatColor.RED + "Purchase For:") && sign.getLine(0).equalsIgnoreCase(ChatColor.GOLD + "[Shield]")) {
-                    Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(),
-                        "eco take " + p.getName() + " " + priceCreateShield);
-                    Location loc = (Location) sign.getLocation().add(0, -1, 0);
-                    loc.getBlock().setType(Material.CHEST);
-                    sign.setLine(0, ChatColor.GRAY + "[Shield]");
-                    sign.setLine(1, ChatColor.RED + "-Offline-");
-                    sign.setLine(2, "");
-                    sign.setLine(3, ChatColor.stripColor(p.getName()));
-                    sign.update();
-                } 
-                else if (sign.getLine(1).equalsIgnoreCase(ChatColor.RED + "-Offline-") && sign.getLine(3).equalsIgnoreCase(ChatColor.stripColor(p.getName()))) { //Enable Shield Sign
-                    shieldGen.add(sign.getLocation().add(0, 1, 0));
-                    makeProtectedArea(sign.getLocation(), e.getPlayer());
-                    sign.setLine(0, ChatColor.GRAY + "[Shield]");
-                    sign.setLine(1, ChatColor.GREEN + "-Online-");
-                    sign.update();
-                }
-                else if (sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "-Online-") && sign.getLine(3).equalsIgnoreCase(ChatColor.stripColor(p.getName()))) { //Disable Shield Sign
-                    sign.setLine(0, ChatColor.GRAY + "[Shield]");
-                    removeProtectedArea(e.getPlayer());
-                    sign.setLine(1, ChatColor.RED + "-Offline-");
-                    shieldGen.remove(sign.getLocation().add(0, 1, 0));
-                    sign.update();
-                }*/
-                
+            }
         }
     }
-    }
+
     //                       //
     //                       //
     //    Block Protection   //
@@ -612,14 +416,12 @@ public class Main extends JavaPlugin implements Listener {
         Player p = (Player) e.getPlayer();
         if (e.getBlock().getType() == Material.CHEST) {
             Location signLoc = e.getBlock().getLocation().add(0, 1, 0);
-            if(signLoc.getBlock().getType() == Material.SIGN_POST)
-            {
+            if (signLoc.getBlock().getType() == Material.SIGN_POST) {
                 Sign sign = (Sign) signLoc.getBlock().getState();
-                if (sign.getLine(0).equalsIgnoreCase(ChatColor.GRAY + "[Turret]") || sign.getLine(0).equalsIgnoreCase(ChatColor.GRAY + "[Shield]"))
-                {
+                if (sign.getLine(0).equalsIgnoreCase(ChatColor.GRAY + "[Turret]") || sign.getLine(0).equalsIgnoreCase(ChatColor.GRAY + "[Shield]")) {
                     e.setCancelled(true);
                     p.sendMessage(
-                        ChatColor.RED + "[Turrets]" + ChatColor.GRAY + " Error: You May Not Break " + sign.getLine(0) +" Chests.");
+                            ChatColor.RED + "[Turrets]" + ChatColor.GRAY + " Error: You May Not Break " + sign.getLine(0) + " Chests.");
                 }
             }
         } else if (e.getBlock().getType() == Material.SIGN || e.getBlock().getType() == Material.SIGN_POST) {
@@ -628,65 +430,32 @@ public class Main extends JavaPlugin implements Listener {
             //
             //Turret Protection
             //
-            if (sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "-Enabled-"))
-            {
+            if (sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "-Enabled-")) {
                 e.setCancelled(true);
                 p.sendMessage(ChatColor.RED + "[Turrets]" + ChatColor.GRAY
-                    + " Error: You May Not Break Enabled Turrets!");
-            }
-            else if (sign.getLine(0).equalsIgnoreCase(ChatColor.GRAY + "[Turret]")
-            && !sign.getLine(3).equalsIgnoreCase(ChatColor.stripColor(p.getName())) && !p.isOp())
+                        + " Error: You May Not Break Enabled Turrets!");
+            } else if (sign.getLine(0).equalsIgnoreCase(ChatColor.GRAY + "[Turret]")
+                    && !sign.getLine(3).equalsIgnoreCase(ChatColor.stripColor(p.getName())) && !p.isOp())
 
             {
                 e.setCancelled(true);
                 p.sendMessage(ChatColor.RED + "[Turrets]" + ChatColor.GRAY
-                    + " Error: You May Not Break a Turret You Don't Own!");
+                        + " Error: You May Not Break a Turret You Don't Own!");
                 p.sendMessage(ChatColor.RED + "[Turrets]" + ChatColor.GRAY + " Turret Owned By: " + sign.getLine(3));
             } else if (sign.getLine(0).equalsIgnoreCase(ChatColor.GRAY + "[Turret]")
-            && sign.getLine(3).equalsIgnoreCase(ChatColor.stripColor(p.getName()))) {
+                    && sign.getLine(3).equalsIgnoreCase(ChatColor.stripColor(p.getName()))) {
                 p.sendMessage(ChatColor.RED + "[Turrets]" + ChatColor.GRAY + " You Broke a Turret.");
                 Location loc = (Location) sign.getLocation().add(0, -1, 0);
                 loc.getBlock().setType(Material.AIR);
 
             } else if (sign.getLine(0).equalsIgnoreCase(ChatColor.GRAY + "[Turret]")
-            && !sign.getLine(3).equalsIgnoreCase(ChatColor.stripColor(p.getName())) && (p.isOp())) {
+                    && !sign.getLine(3).equalsIgnoreCase(ChatColor.stripColor(p.getName())) && (p.isOp())) {
                 p.sendMessage(ChatColor.RED + "[Turrets]" + ChatColor.GRAY + " You Broke a Turret Owned By "
-                    + sign.getLine(3));
+                        + sign.getLine(3));
                 Location loc = (Location) sign.getLocation().add(0, -1, 0);
                 loc.getBlock().setType(Material.AIR);
 
             }
-            //
-            // Shield Protection
-            //
-          /*  if (sign.getLine(1).equalsIgnoreCase(ChatColor.GREEN + "-Online-"))
-            {
-                e.setCancelled(true);
-                p.sendMessage(ChatColor.RED + "[Turrets]" + ChatColor.GRAY
-                    + " Error: You May Not Break Online Shields!");
-            }
-            else if (sign.getLine(0).equalsIgnoreCase(ChatColor.GRAY + "[Shield]")
-            && !sign.getLine(3).equalsIgnoreCase(ChatColor.stripColor(p.getName())) && !p.isOp())
-
-            {
-                e.setCancelled(true);
-                p.sendMessage(ChatColor.RED + "[Turrets]" + ChatColor.GRAY
-                    + " Error: You May Not Break a Shield You Don't Own!");
-                p.sendMessage(ChatColor.RED + "[Turrets]" + ChatColor.GRAY + " Shield Generator Owned By: " + sign.getLine(3));
-            } else if (sign.getLine(0).equalsIgnoreCase(ChatColor.GRAY + "[Shield]")
-            && sign.getLine(3).equalsIgnoreCase(ChatColor.stripColor(p.getName()))) {
-                p.sendMessage(ChatColor.RED + "[Turrets]" + ChatColor.GRAY + " You Broke a Shield Generator.");
-                Location loc = (Location) sign.getLocation().add(0, -1, 0);
-                loc.getBlock().setType(Material.AIR);
-
-            } else if (sign.getLine(0).equalsIgnoreCase(ChatColor.GRAY + "[Shield]")
-            && !sign.getLine(3).equalsIgnoreCase(ChatColor.stripColor(p.getName())) && (p.isOp())) {
-                p.sendMessage(ChatColor.RED + "[Turrets]" + ChatColor.GRAY + " You Broke a Shield Generator Owned By "
-                    + sign.getLine(3));
-                Location loc = (Location) sign.getLocation().add(0, -1, 0);
-                loc.getBlock().setType(Material.AIR);
-
-            }*/
         }
     }
 
@@ -706,187 +475,117 @@ public class Main extends JavaPlugin implements Listener {
         }
 
         if (p.getInventory().getItemInMainHand().getType() == Material.BLAZE_ROD && e.getAction() == Action.LEFT_CLICK_AIR) { //Fires Turret
-        	String id = "";
-        	if (p.getInventory().getItemInMainHand().getItemMeta().hasDisplayName())
-				{	
-        		id = p.getInventory().getItemInMainHand().getItemMeta().getDisplayName();
-				}
+            String id = "";
+            if (p.getInventory().getItemInMainHand().getItemMeta().hasDisplayName()) {
+                id = p.getInventory().getItemInMainHand().getItemMeta().getDisplayName();
+            }
             fireProjectile(p.getPlayer(), id);
         }
-    }    
+    }
 
     //                       //
     //                       //
     //    Initial Creation   //
     //                       //
     //                       //
-@EventHandler
-	public void onSignChange(SignChangeEvent e)
-	{
+    @EventHandler
+    public void onSignChange(SignChangeEvent e) {
         if (e.getLine(0).equalsIgnoreCase("[turret]")) { //For Creating Turrets
-        	e.setLine(0, ChatColor.GOLD + "[Turret]");
-        	e.setLine(1, ChatColor.RED + "Price: " + priceCreateTurret);
-        	e.setLine(3, "Click to Confirm");
-	}
-        
-        /*if (e.getLine(0).equalsIgnoreCase("[shield]")) { //For Creating Shields
-        	e.setLine(0, ChatColor.GOLD + "[Shield]");
-        	e.setLine(1, ChatColor.RED + "Purchase For:");
-        	e.setLine(2, "$" + priceCreateShield);
-        	e.setLine(3, "Click to Confirm");
-	}*/
+            e.setLine(0, ChatColor.GOLD + "[Turret]");
+            e.setLine(1, ChatColor.RED + "Price: " + priceCreateTurret);
+            e.setLine(3, "Click to Confirm");
+        }
+
         if (e.getLine(0).equalsIgnoreCase("[20mm]")) { //For 20mm Flak Turrets
-        	e.setLine(0, ChatColor.GOLD + "[Purchase]");
-        	e.setLine(1, ChatColor.RED + "20mm Flak");
-        	e.setLine(2, "Price:");
-        	e.setLine(3, ""+price20mmSingle);
-	}
+            e.setLine(0, ChatColor.GOLD + "[Purchase]");
+            e.setLine(1, ChatColor.RED + "20mm Flak");
+            e.setLine(2, "Price:");
+            e.setLine(3, "" + price20mmSingle);
+        }
         if (e.getLine(0).equalsIgnoreCase("[20mm Quad]")) { //For 20mm Quad Flak Turrets
-        	e.setLine(0, ChatColor.GOLD + "[Purchase]");
-        	e.setLine(1, ChatColor.RED + "20mm Quad Flak");
-        	e.setLine(2, "Price:");
-        	e.setLine(3, ""+price20mmQuad);
-	}
+            e.setLine(0, ChatColor.GOLD + "[Purchase]");
+            e.setLine(1, ChatColor.RED + "20mm Quad Flak");
+            e.setLine(2, "Price:");
+            e.setLine(3, "" + price20mmQuad);
+        }
         if (e.getLine(0).equalsIgnoreCase("[40mm]")) { //For 40mm Flak Turrets
-        	e.setLine(0, ChatColor.GOLD + "[Purchase]");
-        	e.setLine(1, ChatColor.RED + "40mm Flak");
-        	e.setLine(2, "Price:");
-        	e.setLine(3, ""+price40mmSingle);
-	}
+            e.setLine(0, ChatColor.GOLD + "[Purchase]");
+            e.setLine(1, ChatColor.RED + "40mm Flak");
+            e.setLine(2, "Price:");
+            e.setLine(3, "" + price40mmSingle);
+        }
         if (e.getLine(0).equalsIgnoreCase("[40mm Dual]")) { //For 40mm Double Flak Turrets
-        	e.setLine(0, ChatColor.GOLD + "[Purchase]");
-        	e.setLine(1, ChatColor.RED + "40mm Dual Flak");
-        	e.setLine(2, "Price:");
-        	e.setLine(3, ""+price40mmDouble);
-	}
+            e.setLine(0, ChatColor.GOLD + "[Purchase]");
+            e.setLine(1, ChatColor.RED + "40mm Dual Flak");
+            e.setLine(2, "Price:");
+            e.setLine(3, "" + price40mmDouble);
+        }
         if (e.getLine(0).equalsIgnoreCase("[75mm AP]")) { //For 75mm AP Flak Turrets
-        	e.setLine(0, ChatColor.GOLD + "[Purchase]");
-        	e.setLine(1, ChatColor.RED + "75mm AP Cannon");
-        	e.setLine(2, "Price:");
-        	e.setLine(3, ""+price75mmAP);
-	}
+            e.setLine(0, ChatColor.GOLD + "[Purchase]");
+            e.setLine(1, ChatColor.RED + "75mm AP Cannon");
+            e.setLine(2, "Price:");
+            e.setLine(3, "" + price75mmAP);
+        }
         if (e.getLine(0).equalsIgnoreCase("[75mm HE]")) { //For 75mm HE Flak Turrets
-        	e.setLine(0, ChatColor.GOLD + "[Purchase]");
-        	e.setLine(1, ChatColor.RED + "75mm HE Cannon");
-        	e.setLine(2, "Price:");
-        	e.setLine(3, ""+price75mmHE);
-	}
+            e.setLine(0, ChatColor.GOLD + "[Purchase]");
+            e.setLine(1, ChatColor.RED + "75mm HE Cannon");
+            e.setLine(2, "Price:");
+            e.setLine(3, "" + price75mmHE);
+        }
         // Prevents Direct Turret Creation
         if (e.getLine(0).contains("[20mm Flak]")) {
-        e.setCancelled(true);
-    }
-        if (e.getLine(0).contains("[20mm Quad Flak]")) { 
-        e.setCancelled(true);
-    }
+            e.setCancelled(true);
+        }
+        if (e.getLine(0).contains("[20mm Quad Flak]")) {
+            e.setCancelled(true);
+        }
         if (e.getLine(0).contains("[40mm Flak]")) {
-        e.setCancelled(true);
-    }
+            e.setCancelled(true);
+        }
         if (e.getLine(0).contains("[40mm Dual Flak]")) {
-        e.setCancelled(true);
-    }
+            e.setCancelled(true);
+        }
         if (e.getLine(0).contains("[75mm DP Gun]")) {
-        e.setCancelled(true);
+            e.setCancelled(true);
+        }
+        if (e.getLine(0).contains("[75mm HE Gun]")) {
+            e.setCancelled(true);
+        }
     }
-        if (e.getLine(0).contains("[75mm HE Gun]")) { 
-        e.setCancelled(true);
+
+    public void setDelay(Player p) {
+        isMounted.put(p, true);
+        Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable() {
+            public void run() {
+                isMounted.remove(p);
+            }
+        }, 10);
     }
-	}
-public void setDelay(Player p)
-{
-	isMounted.put(p, true);
-Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(this, new Runnable()
-{
-    public void run()
-    {
-        isMounted.remove(p);
+
+
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent e) {
+        if (e.getDeathMessage().contains("died")) {
+            e.setDeathMessage(null);
+        }
     }
-}, 10);
-}
 
+    @SuppressWarnings("deprecation")
+    @EventHandler
+    public void onPlayerChatEvent(PlayerChatEvent e) {
+        String message = e.getMessage();
+        if (message.length() > 0 && message.charAt(0) != '/' && message.contains("@") && message.length() > 1 && message.charAt(0) != '@') {
+            String playerMentionLong = message.substring(message.indexOf("@") + 1, message.length()) + " ";
+            String playerMentionName = playerMentionLong.substring(0, playerMentionLong.indexOf(" "));
+            if (Bukkit.getServer().getPlayer(playerMentionName) instanceof Player && playerMentionName.length() >= 3) {
+                Player named = (Player) Bukkit.getServer().getPlayer(playerMentionName);
+                named.getWorld().playSound(named.getLocation(), Sound.BLOCK_NOTE_PLING, 1, 2);
+                named.sendMessage(ChatColor.RED + e.getMessage());
+                e.setCancelled(true);
+            }
+        }
 
-@EventHandler
-public void onPlayerDeath(PlayerDeathEvent e)
-{
-	if (e.getDeathMessage().contains("died"))
-	{
-		e.setDeathMessage(null);
-	}
-}
-
-@SuppressWarnings("deprecation")
-@EventHandler
-public void onPlayerChatEvent(PlayerChatEvent e)
-{
-	String message = e.getMessage();
-	if (message.length() > 0 && message.charAt(0) != '/' && message.contains("@") && message.length() > 1 && message.charAt(0) != '@')
-	{
-		String playerMentionLong = message.substring(message.indexOf("@")+1, message.length()) + " ";
-		String playerMentionName = playerMentionLong.substring(0,playerMentionLong.indexOf(" "));
-		if (Bukkit.getServer().getPlayer(playerMentionName) instanceof Player && playerMentionName.length()>=3)
-		{
-			Player named = (Player) Bukkit.getServer().getPlayer(playerMentionName);
-			named.getWorld().playSound(named.getLocation(), Sound.BLOCK_NOTE_PLING, 1, 2);
-			named.sendMessage(ChatColor.RED + e.getMessage());
-			e.setCancelled(true);
-		}
-	}
-	
-}
-
-
-
-//                        //
-//                        //
-//    Movecraft Support   //
-//                        //
-//                        //
-/*@EventHandler
-	public void onCraftTranslate(CraftTranslateEvent e) //Correctly Translates Coordinates of Turret on Movement of Craft
-	{
-	Player p = cm.getPlayerFromCraft(e.getCraft());
-	if (startTarget.containsKey(p))
-	{
-		Vector displacement = new Vector(e.getTranslationTask().getData().getDx(), e.getTranslationTask().getData().getDy(), e.getTranslationTask().getData().getDz());
-		for(Location loc : startTarget.get(p))
-		{
-			loc.add(displacement);
-		}
-	}
-
-	}
-
-@EventHandler
-public void onCraftRotate(CraftRotateEvent e) //Correctly Translates Coordinates of Turret on Rotation of Craft
-{
-    Player p = cm.getPlayerFromCraft(e.getCraft());
-    if (startTarget.containsKey(p))
-    {
-    	for (MovecraftLocation mcLoc : e.getCraft().getBlockList())
-    	{
-    		
-    		for(Location loc : startTarget.get(p))
-    		{
-    			if ((int)loc.getX() == mcLoc.getX() && (int)loc.getZ() == mcLoc.getZ())
-    			{
-    				MovecraftLocation rotateLoc = MathUtils.rotateVec(e.getRotationTask().getRotation(), mcLoc);
-    				loc.setX(rotateLoc.getX());
-    				loc.setZ(rotateLoc.getZ());
-    			}
-    		}
-    	}
     }
-}
-
-@EventHandler
-public void onCraftSink(CraftSinkingEvent e) //Deactivates Turrets On Sinking Craft
-{
-	Player p = cm.getPlayerFromCraft(e.getCraft());
-	if (startTarget.containsKey(p))
-	{
-		startTarget.remove(p);
-	}
-
-}*/
 }
 
 
