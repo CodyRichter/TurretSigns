@@ -1,4 +1,4 @@
-package com.google.Vortek;
+package src;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,13 +38,14 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.BlockIterator;
 import org.bukkit.util.Vector;
-
+/*
 import net.countercraft.movecraft.events.CraftRotateEvent;
 import net.countercraft.movecraft.events.CraftSinkingEvent;
 import net.countercraft.movecraft.events.CraftTranslateEvent;
 import net.countercraft.movecraft.utils.MathUtils;
 import net.countercraft.movecraft.utils.MovecraftLocation;
 import net.countercraft.movecraft.craft.CraftManager;
+*/
 import net.md_5.bungee.api.ChatColor;
 
 public class Main extends JavaPlugin implements Listener {
@@ -67,7 +68,7 @@ public class Main extends JavaPlugin implements Listener {
     ArrayList<Location> shieldGen = new ArrayList<Location>();
     ArrayList<Player> reload = new ArrayList<Player>();
     ArrayList<Player> regionList = new ArrayList<Player>();
-    CraftManager cm;
+    //CraftManager cm;
     
     //Runs on start
     public void onEnable() {
@@ -75,7 +76,7 @@ public class Main extends JavaPlugin implements Listener {
         // Manager
         pm.registerEvents(this, this); // Registers
         // Blocklistener.java
-        cm = CraftManager.getInstance();
+        //cm = CraftManager.getInstance();
     }
 
     public void onDisable() {

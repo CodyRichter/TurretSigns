@@ -1,4 +1,4 @@
-main: com.google.Vortek.Main
+main: src.Main
 name: TurretSigns
 version: 1.0
 author: me
