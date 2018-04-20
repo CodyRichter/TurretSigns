@@ -58,10 +58,9 @@ public class Main extends JavaPlugin implements Listener {
     private int price40mmDouble = 50000;
     private int price75mmAP = 80000;
     private int price75mmHE = 100000;
-    
+
     private final double VERSION = 1.5; // Version
     private final String AUTHOR = "Senarii"; // Author
-    private Block targetBlock; //Location of Selected Target
     HashMap<Player, Location> finalTarget = new HashMap<Player, Location>();
     HashMap<Player, Boolean> isMounted = new HashMap<Player, Boolean>();
     HashMap<Player, ArrayList<Location>> startTarget = new HashMap<Player, ArrayList<Location>>();
@@ -701,7 +700,7 @@ public class Main extends JavaPlugin implements Listener {
     public void onClick(PlayerInteractEvent e) {
         Player p = (Player) e.getPlayer();
         if (p.getInventory().getItemInMainHand().getType() == Material.BLAZE_ROD && e.getAction() == Action.RIGHT_CLICK_AIR) { //Sets Target
-            targetBlock = getTargetedBlock(p, 300);
+            Block targetBlock = getTargetedBlock(p, 300);
             finalTarget.put(p.getPlayer(), targetBlock.getLocation());
             p.sendMessage(ChatColor.RED + "[Turrets]" + ChatColor.GRAY + " Target Selected.");
         }
